@@ -2,7 +2,7 @@
 
 // Chase Southard
 // July 5, 2014
-// Neopixel Nightlight
+// NeoPixel Nightlight
 
 // Some code from Adafruit stand test example code
 // github.com/adafruit/Adafruit_NeoPixel/master/examples/strandtest
@@ -23,13 +23,28 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(1, PIN, NEO_GRB + NEO_KHZ800);
 // and minimize distance between Arduino and first pixel.  Avoid connecting
 // on a live circuit...if you must, connect GND first.
 
+// Timer
+unsigned long elapsedTime = 0;
+unsigned long max_time = 900000; // 15 minutes
+
 void setup() {
   strip.begin();
-  strip.show(); // Initialize all pixels to 'off'  
+  strip.show(); // Initialize all pixels to 'off'
 }
 
 void loop() {
-  rainbow(500);
+  elapsedTime = millis();
+
+  if(elapsedTime >= 15000UL){
+    // turn all pixels off
+    for(i=0; i<strip.numPixels(); i++) {
+      strip.setPixelColor(i, 0, 0, 0);
+    }
+    strip.show();
+  }
+  else{
+    rainbow(500);
+  }
 }
 
 void rainbow(uint8_t wait) {
