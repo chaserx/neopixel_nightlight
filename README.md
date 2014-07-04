@@ -18,3 +18,4 @@ the LED should slowly and smoothly cycle between a variety of colors.
 
 ## Prototype
 
+![](../images/2014-07-04%2013.44.55.jpg)
