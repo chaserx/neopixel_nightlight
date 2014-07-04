@@ -25,28 +25,51 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(1, PIN, NEO_GRB + NEO_KHZ800);
 // and minimize distance between Arduino and first pixel.  Avoid connecting
 // on a live circuit...if you must, connect GND first.
 
-// double max_time = 900000UL; // 15 minutes
+// double max_time = 900000; // 15 minutes
 double max_time = 15000; // 15 seconds
 unsigned long last_time_check = millis();
+bool nightlight_requested = false;
+const int restartPin = 0; // pin 0
+int restartButtonState = 0;
 
 void setup() {
   strip.begin();
   strip.show(); // Initialize all pixels to 'off'
+  pinMode(restartPin, INPUT);
+  digitalWrite(restartPin, HIGH);
 }
 
 void loop() {
-  if(max_time <= 0) {
-    // turn all pixels off
-    uint16_t i;
-    for(i=0; i<strip.numPixels(); i++) {
-      strip.setPixelColor(i, 0, 0, 0);
-    }
-    strip.show();
+  restartButtonState = digitalRead(restartPin);
+
+  if(restartButtonState == LOW) {
+    restart();
   }
-  else {
-    rainbow(500);
+
+  if(nightlight_requested) {
+    if(max_time <= 0) {
+      // turn all pixels off
+      uint16_t i;
+      for(i=0; i<strip.numPixels(); i++) {
+        strip.setPixelColor(i, 0, 0, 0);
+      }
+      strip.show();
+      flip_nightlight_request();
+    }
+    else {
+      rainbow(500);
+    }
   }
   updateTimer();
+}
+
+void flip_nightlight_request() {
+  nightlight_requested = !nightlight_requested;
+}
+
+void restart() {
+  max_time = 15000;
+  flip_nightlight_request();
 }
 
 // Decrement the number of milliseconds left on the timer.
