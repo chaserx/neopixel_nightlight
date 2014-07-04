@@ -6,6 +6,7 @@
 
 // Some code from Adafruit stand test example code
 // github.com/adafruit/Adafruit_NeoPixel/master/examples/strandtest
+// Some timer code from here: http://pastebin.com/YrV5t73e
 
 #define PIN 2
 
@@ -23,9 +24,9 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(1, PIN, NEO_GRB + NEO_KHZ800);
 // and minimize distance between Arduino and first pixel.  Avoid connecting
 // on a live circuit...if you must, connect GND first.
 
-// Timer
-unsigned long elapsedTime = 0;
-unsigned long max_time = 900000; // 15 minutes
+// unsigned long max_time = 900000UL; // 15 minutes
+double max_time = 15000; // 15 seconds
+unsigned long last_time_check = millis();
 
 void setup() {
   strip.begin();
@@ -33,9 +34,7 @@ void setup() {
 }
 
 void loop() {
-  elapsedTime = millis();
-
-  if(elapsedTime >= 15000UL){
+  if(max_time <= 0) {
     // turn all pixels off
     uint16_t i;
     for(i=0; i<strip.numPixels(); i++) {
@@ -43,9 +42,19 @@ void loop() {
     }
     strip.show();
   }
-  else{
+  else {
     rainbow(500);
   }
+  updateTimer();
+}
+
+// Update the variable that contains the number of milliseconds left on the timer.
+// millis() is a built-in function that returns the number of milliseconds that have elapsed
+// since the Arduino was turned on. We check how many milliseconds have elapsed since last time
+// we ran this function.
+void updateTimer() {
+  max_time -= ((millis() - last_time_check));
+  last_time_check = millis();
 }
 
 void rainbow(uint8_t wait) {
