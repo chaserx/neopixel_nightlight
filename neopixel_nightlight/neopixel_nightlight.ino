@@ -4,11 +4,12 @@
 // July 5, 2014
 // NeoPixel Nightlight
 
+// Acknowledgments and Inspiration
 // Some code from Adafruit stand test example code
 // github.com/adafruit/Adafruit_NeoPixel/master/examples/strandtest
 // Some timer code from here: http://pastebin.com/YrV5t73e
 
-#define PIN 2
+#define PIN 2 // for neopixel communication
 
 // Parameter 1 = number of pixels in strip
 // Parameter 2 = Arduino pin number (most are valid)
@@ -24,7 +25,7 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(1, PIN, NEO_GRB + NEO_KHZ800);
 // and minimize distance between Arduino and first pixel.  Avoid connecting
 // on a live circuit...if you must, connect GND first.
 
-// unsigned long max_time = 900000UL; // 15 minutes
+// double max_time = 900000UL; // 15 minutes
 double max_time = 15000; // 15 seconds
 unsigned long last_time_check = millis();
 
@@ -48,15 +49,17 @@ void loop() {
   updateTimer();
 }
 
-// Update the variable that contains the number of milliseconds left on the timer.
-// millis() is a built-in function that returns the number of milliseconds that have elapsed
-// since the Arduino was turned on. We check how many milliseconds have elapsed since last time
-// we ran this function.
+// Decrement the number of milliseconds left on the timer.
+// millis() is a built-in function that returns the number of milliseconds that
+// have elapsed since the Arduino was turned on. We check how many milliseconds
+// have elapsed since last time we ran this function.
+//
 void updateTimer() {
   max_time -= ((millis() - last_time_check));
   last_time_check = millis();
 }
 
+// Dreamy light show. It changes LED color on a specified interval.
 void rainbow(uint8_t wait) {
   uint16_t i, j;
 
@@ -71,6 +74,7 @@ void rainbow(uint8_t wait) {
 
 // Input a value 0 to 255 to get a color value.
 // The colours are a transition r - g - b - back to r.
+//
 uint32_t Wheel(byte WheelPos) {
   if(WheelPos < 85) {
    return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0);
