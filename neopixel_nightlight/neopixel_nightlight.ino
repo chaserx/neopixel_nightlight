@@ -37,6 +37,7 @@ void loop() {
 
   if(elapsedTime >= 15000UL){
     // turn all pixels off
+    uint16_t i;
     for(i=0; i<strip.numPixels(); i++) {
       strip.setPixelColor(i, 0, 0, 0);
     }
